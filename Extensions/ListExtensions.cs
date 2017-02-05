@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 public static class ListExtensions{
-    private static Random rng = new Random();  
+    private static Random rng = new Random();
 
     public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> enumerable)  
     {  

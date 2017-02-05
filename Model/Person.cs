@@ -1,30 +1,30 @@
 using System;
 
 public class Person{
-    public const int PenaltyBag = 10;
-
+    public int Id { get; }
     public bool HasBag { get; private set;}
     public int Zone {get;}
     public Position CurrentPosition { get; private set; }
     public Position TargetPosition { get; }
     public bool Seated { get{
-        return CurrentPosition.Row == TargetPosition.Row && CurrentPosition.Seat == CurrentPosition.Seat;
+        return CurrentPosition.Seat >= 0;
     }}
     private int penalty;
 
-    public Person(Position targetPosition, bool hasBag, int zone){
+    public Person(int id, Position targetPosition, bool hasBag, int zone){
         CurrentPosition = new Position{
             Row = -1,
             Seat = -1
         };
 
+        Id = id;
         TargetPosition = targetPosition;
         HasBag = hasBag;
         Zone = zone;
         penalty = 0;
     }
 
-    public bool Move(Airplane airplane){
+    public bool Step(Airplane airplane){
         if (penalty > 0){
             penalty--;
             return false;
@@ -42,7 +42,7 @@ public class Person{
 
             if (HasBag){
                 HasBag = false;
-                penalty = PenaltyBag;
+                penalty = SimConfiguration.PenaltyBag;
                 return false;
             }
 
@@ -53,13 +53,15 @@ public class Person{
             newPosition.Row++;
         }
 
-        int newPenalty;
-        if (!airplane.Move(this, newPosition, out newPenalty)){
-            penalty = newPenalty;
+        if (!airplane.Move(this, newPosition)){
             return false;
         }
 
         CurrentPosition = newPosition;
         return true;
+    }
+
+    public override string ToString(){
+        return $"{Id.ToString("D3")}-{Zone}";
     }
 }

@@ -1,29 +1,31 @@
 using System;
+using System.Threading;
 
 public class SimRunner {
-    private SimConfiguration configuration;
-    private int simNumber;
-
-    public SimRunner(SimConfiguration configuration){
-        this.configuration = configuration;
-    }
-
+    // TODO: Extract to SimResult class
     public void Run(){
-        while(simNumber < configuration.Runs){
-            RunNewSim();
+        var totalSteps = 0L;
+        var nRuns = SimConfiguration.Runs;
+        for (var simNumber = 0; simNumber < nRuns; simNumber++){
+            totalSteps += RunNewSim();
         }
+
+        Console.WriteLine($"Completed {nRuns} sims with in average of {totalSteps/nRuns} steps.");
     }
 
-    private void RunNewSim(){
-        var state = new SimInitializer(configuration).Initialize();
-        Console.WriteLine($"Running sim #{simNumber}...");
-
-        do{
-            state.Step();
+    private int RunNewSim(){
+        var state = new SimInitializer().Initialize();
+        while(!state.Step()){
+            if (SimConfiguration.Print){
+                Console.Clear();
+                Console.WriteLine(state);
+                Thread.Sleep(SimConfiguration.StepThrottle);
+            }
         }
-        while(state.Status == SimStatus.InProgress);
 
-        Console.WriteLine($"Sim #{simNumber} completed in{state.CurrentStep} steps");
-        simNumber++;
+        // Console.Clear();
+        // Console.WriteLine(state);
+        return state.CurrentStep;
+        //Console.WriteLine($"Sim #{simNumber} completed in {state.CurrentStep} steps");
     }
 }

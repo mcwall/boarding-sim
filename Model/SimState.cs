@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System;
 
 public class SimState{
     public int CurrentStep { get; private set; }
@@ -13,11 +14,11 @@ public class SimState{
         Status = SimStatus.Ready;
     }
 
-    public void Step(){
+    public bool Step(){
         Status = SimStatus.InProgress;
         if (personQueue.Count == 0){
             Status = SimStatus.Done;
-            return;
+            return true;
         }
 
         var newQueue = new Queue<Person>();
@@ -27,11 +28,29 @@ public class SimState{
                 continue;
             }
 
-            person.Move(airplane);
+            person.Step(airplane);
             newQueue.Enqueue(person);
         }
 
+        airplane.Step();
         personQueue = newQueue;
+        CurrentStep++;
+        return false;
+        // Console.WriteLine($"Count: {personQueue.Count}");
+        // Console.WriteLine(airplane);
+        // throw new Exception();
+    }
+
+    public override string ToString(){
+        return airplane.ToString()
+                + $"{Environment.NewLine} Step: {CurrentStep}"
+                + $"{Environment.NewLine}{GetConfigString()}";
+    }
+
+    // TODO: this doesn't belong here
+    private string GetConfigString(){
+        return $"{Environment.NewLine} Zone Strategy: {SimConfiguration.ZoneStrategy}"
+             + $"{Environment.NewLine} Zones: {SimConfiguration.Zones}";
     }
 }
 

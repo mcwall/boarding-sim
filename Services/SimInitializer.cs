@@ -3,29 +3,26 @@ using System.Linq;
 using System.Collections.Generic;
 
 public class SimInitializer{
-    private SimConfiguration configuration;
+    private IZoneStrategy zoneStrategy;
+    private static Random rng = new Random();
 
-    public SimInitializer(SimConfiguration configuration){
-        this.configuration = configuration;
+    public SimInitializer(){
+        zoneStrategy = new ZoneStrategyResolver().Resolve();
     }
 
     public SimState Initialize(){
-        if (configuration.SeatsPerRow % 2 == 1){
-            // TODO: implement odd SeatsPerRow
-            throw new Exception("Only even SeatsPerRow allowed");
-        }
-
         var airplane = new Airplane(
-            configuration.Rows, configuration.SeatsPerRow
+            SimConfiguration.Rows, SimConfiguration.SeatsPerRow
         );
 
-        var numPersons = configuration.Rows * configuration.SeatsPerRow;
+        var numPersons = SimConfiguration.Rows * SimConfiguration.SeatsPerRow;
         var orderedPersons = new List<Person>(numPersons);
-        for (var iRow = 0; iRow < configuration.Rows; iRow++){
-            for (var iSeat = 0; iSeat < configuration.SeatsPerRow * 2; iSeat++){
+        var id = 0;
+        for (var iRow = 0; iRow < SimConfiguration.Rows; iRow++){
+            for (var iSeat = 0; iSeat < SimConfiguration.SeatsPerRow; iSeat++){
                 var target = new Position { Row = iRow, Seat = iSeat };
-                // TODO: implement bag probability and zone strategy
-                orderedPersons.Add(new Person(target, true, 1));
+                var hasBag = rng.NextDouble() < SimConfiguration.ProbabilityHasBag;
+                orderedPersons.Add(new Person(id++, target, hasBag, zoneStrategy.AssignZone(target)));
             }
         }
 
@@ -34,10 +31,10 @@ public class SimInitializer{
 
     private IEnumerable<Person> ReorderPersonsByZone(IEnumerable<Person> persons){
         var newPersons = new List<Person>();
-        for (var i = 0; i < configuration.Zones; i ++){
+        for (var i = 0; i < SimConfiguration.Zones; i ++){
             newPersons.AddRange(persons.Where(p => p.Zone == i).Shuffle());
         }
 
-        return persons;
+        return newPersons;
     }
 }
