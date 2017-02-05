@@ -23,9 +23,6 @@ public class SimRunner {
             }
         }
 
-        // Console.Clear();
-        // Console.WriteLine(state);
         return state.CurrentStep;
-        //Console.WriteLine($"Sim #{simNumber} completed in {state.CurrentStep} steps");
     }
 }
