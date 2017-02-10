@@ -1,6 +1,8 @@
-public class AreaZoneStrategy : IZoneStrategy{
+public class AreaZoneStrategy : IZoneStrategy
+{
 
-    public int AssignZone(Position position){
+    public int AssignZone(Position position)
+    {
         var nRows = SimConfiguration.Rows;
         var nZones = SimConfiguration.Zones;
         var zoneSize = nRows / nZones;

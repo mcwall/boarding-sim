@@ -1,18 +1,25 @@
 using System;
 
-public class Person{
+public class Person
+{
     public int Id { get; }
-    public bool HasBag { get; private set;}
-    public int Zone {get;}
+    public bool HasBag { get; private set; }
+    public int Zone { get; }
     public Position CurrentPosition { get; private set; }
     public Position TargetPosition { get; }
-    public bool Seated { get{
-        return CurrentPosition.Seat >= 0;
-    }}
+    public bool Seated
+    {
+        get
+        {
+            return CurrentPosition.Seat >= 0;
+        }
+    }
     private int penalty;
 
-    public Person(int id, Position targetPosition, bool hasBag, int zone){
-        CurrentPosition = new Position{
+    public Person(int id, Position targetPosition, bool hasBag, int zone)
+    {
+        CurrentPosition = new Position
+        {
             Row = -1,
             Seat = -1
         };
@@ -24,23 +31,29 @@ public class Person{
         penalty = 0;
     }
 
-    public bool Step(Airplane airplane){
-        if (penalty > 0){
+    public bool Step(Airplane airplane)
+    {
+        if (penalty > 0)
+        {
             penalty--;
             return false;
         }
 
-        var newPosition = new Position{
+        var newPosition = new Position
+        {
             Row = CurrentPosition.Row,
             Seat = CurrentPosition.Seat
         };
 
-        if (CurrentPosition.Row == TargetPosition.Row){
-            if (CurrentPosition.Seat == TargetPosition.Seat){
+        if (CurrentPosition.Row == TargetPosition.Row)
+        {
+            if (CurrentPosition.Seat == TargetPosition.Seat)
+            {
                 throw new Exception("Person already in final seat");
             }
 
-            if (HasBag){
+            if (HasBag)
+            {
                 HasBag = false;
                 penalty = SimConfiguration.PenaltyBag;
                 return false;
@@ -49,11 +62,13 @@ public class Person{
             // Move to seat
             newPosition.Seat = TargetPosition.Seat;
         }
-        else{
+        else
+        {
             newPosition.Row++;
         }
 
-        if (!airplane.Move(this, newPosition)){
+        if (!airplane.Move(this, newPosition))
+        {
             return false;
         }
 
@@ -61,7 +76,8 @@ public class Person{
         return true;
     }
 
-    public override string ToString(){
+    public override string ToString()
+    {
         return $"{Id.ToString("D3")}-{Zone}";
     }
 }

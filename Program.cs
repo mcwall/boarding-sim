@@ -6,10 +6,12 @@
         public static void Main(string[] args)
         {
             new ArgResolver().Resolve(args);
-            try{
+            try
+            {
                 new SimRunner().Run();
             }
-            catch(Exception e){
+            catch (Exception e)
+            {
                 Console.WriteLine(e);
             }
         }

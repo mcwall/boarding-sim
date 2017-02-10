@@ -1,8 +1,10 @@
-public interface IZoneStrategy{
+public interface IZoneStrategy
+{
     int AssignZone(Position position);
 }
 
-public enum ZoneStrategy{
+public enum ZoneStrategy
+{
     Random,
     Area,
     Aisle,

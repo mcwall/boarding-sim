@@ -5,7 +5,7 @@ public class SimConfiguration{
 
     public static ZoneStrategy ZoneStrategy = ZoneStrategy.Random;
     public static int Runs = 1;
-    public static bool Print = false;
+    public static bool Print = true;
     public static int StepThrottle = 50;
     
 

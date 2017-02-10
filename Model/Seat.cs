@@ -1,42 +1,54 @@
 using System;
 
-public class Seat{
+public class Seat
+{
     private Person person;
     private SeatStatus status;
     private int transitionTime;
 
-    public Seat(){
+    public Seat()
+    {
         status = SeatStatus.Empty;
     }
 
-    public void Step(){
-        if (person == null){
+    public void Step()
+    {
+        if (person == null)
+        {
             transitionTime = 0;
             status = SeatStatus.Empty;
         }
 
-        if (status == SeatStatus.PrepareToStand){
-            if (transitionTime == 0){
+        if (status == SeatStatus.PrepareToStand)
+        {
+            if (transitionTime == 0)
+            {
                 status = SeatStatus.Standing;
                 transitionTime = SimConfiguration.DefaultTimeToSit;
             }
-            else{
+            else
+            {
                 transitionTime--;
             }
         }
-        else if(status == SeatStatus.Standing){
-            if (transitionTime == 0){
+        else if (status == SeatStatus.Standing)
+        {
+            if (transitionTime == 0)
+            {
                 status = SeatStatus.Sitting;
                 transitionTime = 0;
             }
-            else{
+            else
+            {
                 transitionTime--;
             }
         }
     }
 
-    public void Sit(Person person){
-        if (this.person != null){
+    public void Sit(Person person)
+    {
+        if (this.person != null)
+        {
             throw new Exception("Seat conflict");
         }
 
@@ -45,12 +57,21 @@ public class Seat{
         transitionTime = 0;
     }
 
-    public bool ResolveObstruction(){
-        if (person == null || status == SeatStatus.Standing){
+    public bool ResolveObstruction()
+    {
+        if (person == null)
+        {
             return false;
         }
 
-        if (status == SeatStatus.Sitting){
+        if (status == SeatStatus.Standing)
+        {
+            transitionTime = SimConfiguration.DefaultTimeToSit;
+            return false;
+        }
+
+        if (status == SeatStatus.Sitting)
+        {
             status = SeatStatus.PrepareToStand;
             transitionTime = SimConfiguration.DefaultTimeToStand;
         }
@@ -58,9 +79,11 @@ public class Seat{
         return true;
     }
 
-    public override string ToString(){
+    public override string ToString()
+    {
         string statusString;
-        switch(status){
+        switch (status)
+        {
             case SeatStatus.Sitting:
                 statusString = "SIT";
                 break;
@@ -80,7 +103,8 @@ public class Seat{
 
 }
 
-public enum SeatStatus{
+public enum SeatStatus
+{
     Empty,
     Sitting,
     PrepareToStand,

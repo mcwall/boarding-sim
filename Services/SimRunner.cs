@@ -1,28 +1,53 @@
 using System;
 using System.Threading;
 
-public class SimRunner {
+public class SimRunner
+{
     // TODO: Extract to SimResult class
-    public void Run(){
+
+    private bool paused;
+
+    public void Run()
+    {
+        paused = false;
         var totalSteps = 0L;
         var nRuns = SimConfiguration.Runs;
-        for (var simNumber = 0; simNumber < nRuns; simNumber++){
+        for (var simNumber = 0; simNumber < nRuns; simNumber++)
+        {
             totalSteps += RunNewSim();
         }
 
-        Console.WriteLine($"Completed {nRuns} sims with in average of {totalSteps/nRuns} steps.");
+        Console.WriteLine($"Completed {nRuns} sims with in average of {totalSteps / nRuns} steps.");
     }
 
-    private int RunNewSim(){
+    private int RunNewSim()
+    {
         var state = new SimInitializer().Initialize();
-        while(!state.Step()){
-            if (SimConfiguration.Print){
+
+        while (!state.Step())
+        {
+            // TODO: This should be the concern of the Program, not SimRunner
+            if (SimConfiguration.Print)
+            {
                 Console.Clear();
                 Console.WriteLine(state);
-                Thread.Sleep(SimConfiguration.StepThrottle);
+                CheckForPause();
             }
         }
 
         return state.CurrentStep;
+    }
+
+    private void CheckForPause()
+    {
+        do
+        {
+            // TODO: This actually allows the P to print, try to fix that
+            Thread.Sleep(SimConfiguration.StepThrottle);
+            if (Console.KeyAvailable && Console.ReadKey(true).Key == ConsoleKey.P)
+            {
+                paused = !paused;
+            }
+        } while (paused);
     }
 }

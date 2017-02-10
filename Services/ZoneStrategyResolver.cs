@@ -1,8 +1,11 @@
 using System;
 
-public class ZoneStrategyResolver{
-    public IZoneStrategy Resolve(){
-        switch(SimConfiguration.ZoneStrategy){
+public class ZoneStrategyResolver
+{
+    public IZoneStrategy Resolve()
+    {
+        switch (SimConfiguration.ZoneStrategy)
+        {
             case ZoneStrategy.Area:
                 return new AreaZoneStrategy();
             case ZoneStrategy.Random:
